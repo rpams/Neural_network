@@ -1,8 +1,8 @@
 # Feed Forward Neural Network
 
-Implement a bit like a keras library. 
+Implemented a bit like a keras library. 
 
-Only for machine learning
+For machine learning
 
 ### Test
 run.py file is an implementation to resolve xor.
