@@ -6,6 +6,9 @@ Only for machine learning
 
 ### Test
 run.py file is an implementation to resolve xor.
+```bash
+python run.py
+```
 
 Here is a construction of the model
 ```python
