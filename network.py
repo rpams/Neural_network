@@ -1,4 +1,7 @@
 import numpy as np
+import time
+from utils import *
+import pickle
 
 class Network:
     def __init__(self, softmax=False):
@@ -35,16 +38,16 @@ class Network:
                 output = layer.forward_propagation(output)
             result.append(output)
         
-        print("\n________________________________________ ")
-        print("\nPredictions : ")
+        print("\n ________________________________________ ")
+        print("\n Predictions : ")
         for i, elt in enumerate(result):
             if elt[0][0] >= 0.5:
                 elt[0][0] = 1
             else:
                 elt[0][0] = 0
-            print(i+1,"=>",elt)
-        print("min error = ", min(self.errors),"\n")
-        print("________________________________________ END")
+            print(" ",i+1,"=>",elt)
+        print(f" min error =  {min(self.errors):.7f}\n")
+        print(" ________________________________________ END")
     
     # Organize data
     def struct_train(self, xtrain, ytrain):
@@ -54,10 +57,21 @@ class Network:
 
 
     # train the network
-    def train(self, x_train, y_train, epochs=0, learning_rate=0, graphic=False, name='gradient_descent'):
+    def train(self, x_train, y_train, 
+        epochs=0, learning_rate=0, 
+        graphic=False, name='gradient_descent'):
+
+        print("\n TRAINING REPORT \n")
+        # Initial call to print 0% progress for the progress bar
+        ProgressBar(0, epochs, prefix = 'Progress:', suffix = 'Ok', length = 30)
+        
         # sample dimension first
         samples = len(x_train)
-        x_train, y_train = self.struct_train(x_train, y_train) 
+        x_train, y_train = self.struct_train(x_train, y_train)
+
+        # Set time to calculate script duration
+        begin = time.time()
+
         # training loop
         for i in range(epochs):
             err = 0
@@ -77,36 +91,44 @@ class Network:
 
             # calculate average error on all samples
             err /= samples
-            print('epoch(s) %d/%d => err = %.10f' % (i+1, epochs, err))
+            #print('epoch(s) %d/%d => err = %.10f' % (i+1, epochs, err))
             #print(f'epoch {i+1}/epochs => error={err}')
             
             # setting values of training report
             self.epoch.append(i)
             self.errors.append(err)
+        
+            # Update Progress Bar
+            ProgressBar(i + 1, epochs, prefix = 'Progress:', suffix = err, length = 30)
+        
+        end = time.time()
+        duration = end - begin
+        print(f"\n Duration : {duration:.3f} sec")
 
         if graphic:
             self.get_train_graph(name)
             
             
             
+    # sending training report
     def final_state(self):
-        # sending training report
         return (self.errors, self.epoch)
 
     
     def get_train_graph(self, name='gradient_descent'):
         errors, iterations = self.final_state()
         import matplotlib.pyplot as plt
-        plt.grid(True)
-        plt.title("Gradient Descent => min = "+str(errors[-1]))
+        #plt.grid(True)
+        plt.title("Min = "+str(min(errors)))
         plt.plot(iterations, errors, label="Gradient")
-        #plt.annotate(errors[-1], (iterations[-1], errors[-1]))
-        #plt.text(iterations[-1], errors[-1], r'min')
         plt.xlabel('iterations')
         plt.ylabel('error')
         plt.savefig(name+'.png')
         plt.legend()
         plt.show()
-        plt.clf()
 
-
+    def save_model(self, model, name="default"):
+        pass
+    
+    def upload_model(self, model):
+        pass
