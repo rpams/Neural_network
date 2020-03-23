@@ -1,6 +1,6 @@
 # Feed Forward Neural Network
 
-Implemented a bit like a keras library. 
+Implemented just as an approach of keras. 
 
 For machine learning
 
